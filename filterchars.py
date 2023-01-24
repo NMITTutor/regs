@@ -11,12 +11,16 @@ class Descriptor(object):
         
         self.content = None
         
+        self.full_name = None
+        
      def set_learning_outcomes(self,fn):
         self.learning_outcomes = fn(self.raw)
      def set_content(self,fn):
         self.content = fn(self.raw)
      def set_aim(self,fn):
         self.aim = fn(self.raw)
+     def set_full_name(self,fn):
+        self.full_name = fn(self.raw)
         
 def get_txt_between(raw:str, re1:re , re2:re ):
          whole_list = re.split(re1,raw)
@@ -98,6 +102,16 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         re1 = r"(?i)Aim[:]?"
         re2 = r"(?i)Learning Outcomes[:]?"
         return get_txt_between(raw,re1,re2)
+    
+    def get_full_name(raw:str):
+        re1 = r"(?i)Module Name[:]?"
+        re2 = r"(?i)Module Code[:]?"
+        re3 = r"[A-Z]{4}[-9]{3} :"
+        re4 = r"(?i)Credit value[:]?"
+        result = get_txt_between(raw,re1,re2)
+        if (result == "") or (result is None):
+            result =  get_txt_between(raw,re3,re4)
+        return result
         
     course_content = {}  # A dictionary of "Descriptors" by course
      
@@ -139,18 +153,19 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         course_content[descriptor_code].set_learning_outcomes(get_learning_outcomes)
         course_content[descriptor_code].set_content(get_content)
         course_content[descriptor_code].set_aim(get_aim)
+        course_content[descriptor_code].set_full_name(get_full_name)
         
     return course_content
 
 if __name__ == "__main__":
  # test code
  # WinTec
- #   course_content = Wintec_BAppliedIT_Vol2()
- #   for key in course_content:
- #       print(key,":",course_content[key].aim)
+   course_content = Wintec_BAppliedIT_Vol2()
+   for key in course_content:
+       print(key,":",course_content[key].full_name)
  # UCol
-    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
-    for key in course_content:
-        print(key,":",course_content[key].raw)                 
+    # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    # for key in course_content:
+    #     print(key,":",course_content[key].raw)                 
             
            
