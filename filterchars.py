@@ -27,12 +27,39 @@ def get_txt_between(raw:str, re1:re , re2:re ):
          return the_text  
      
 def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> dict:
+    #Ucol get descriptors
+    # Run with Bash command:
+    # pdf2txt -n ./'UCOL Bachelor of Information and Communications Technology L7 Courses.pdf' | /usr/bin/python3 ./filterchars.py > UCOL.txt
     course_content = {}  # A dictionary of "Descriptors" by course
-     
+    
     # Read txt into pages
     instr = sys.stdin.read()
     page_list = instr.split('')
-    return page_list
+    
+    current_module = ""
+
+    # Get descriptors - filter out page and start of modules, process for each descriptor 
+    for page in page_list:
+        
+        # Bachelor of Information and Communications Technology Level 7 Version 21.2 Approved by: NZQA  Page 1 of 76 Master Copy: I/CAS/curriculum documents and programme file   
+        repagestr = r"Bachelor.*Page [0-9]+ of [0-9]+ Master.*programme file"
+        restart = r"[A-Z][0-9]{3}.*Course Level"
+        proposed_output = (re.sub(repagestr,"",page)).strip()
+        #test_filter_pages += [filtered_str]
+             
+        if proposed_output != "":
+            # If a new course code
+            the_module_match = re.match(r"[A-Z][0-9]{3}",proposed_output)
+            if the_module_match is not None:
+                current_module = the_module_match.group()
+                # Create a descriptor with this proposed_output as "raw"
+                descriptor = Descriptor(current_module,proposed_output)
+                course_content[current_module] = descriptor
+            else:
+                # append the proposed output to raw
+                course_content[current_module].raw += proposed_output
+    return course_content
+    #test_filter_pages+["/nCOUNT = "+str(count)]
     pass
     
 def Unitec_BSC_Prog_Descriptors() -> dict :
@@ -121,6 +148,9 @@ if __name__ == "__main__":
  #   course_content = Wintec_BAppliedIT_Vol2()
  #   for key in course_content:
  #       print(key,":",course_content[key].aim)
-    print(Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses())                  
+ # UCol
+    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    for key in course_content:
+        print(key,":",course_content[key].raw)                 
             
            
