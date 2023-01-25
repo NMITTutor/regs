@@ -33,6 +33,26 @@ def get_txt_between(raw:str, re1:re , re2:re ):
 def PR5006_HV4701_BIT():
     #  Run with BASH
     #  pdf2txt -n ./PR5006-HV4701_BIT_Programme_descriptors.pdf | /usr/bin/python3 ./filterchars.py
+    def get_learning_outcomes( raw:str) :
+        #scan raw to accumulate learning outcomes 
+        #return LOs
+        re1 = r"(?i)Learning Outcomes[:]?"
+        re2 = r"(?i)Indicative Content[:]?"
+        return (get_txt_between(raw,re1,re2)).strip()
+    
+    def get_content( raw:str) :
+        #scan raw to accumulate content
+        #return content
+        
+        re1 = r"(?i)[Cc]ontent"
+        re2 = r"(?i)Assessment Method"
+        return get_txt_between(raw,re1,re2)
+    
+    def get_aim(raw:str):
+        re1 = r"(?i)Aim[s]?"
+        re2 = r"(?i)Learning Outcomes"
+        return get_txt_between(raw,re1,re2)
+    
     def get_full_name(raw:str):
         re1 = r"(?i)Title"
         re2 = r"(?i)Level"
@@ -59,9 +79,9 @@ def PR5006_HV4701_BIT():
                 course_content[current_module].raw += page
     # Process raw
     for descriptor_code in course_content:
-        #course_content[descriptor_code].set_learning_outcomes(get_learning_outcomes)
-        #course_content[descriptor_code].set_content(get_content)
-        #course_content[descriptor_code].set_aim(get_aim)
+        course_content[descriptor_code].set_learning_outcomes(get_learning_outcomes)
+        course_content[descriptor_code].set_content(get_content)
+        course_content[descriptor_code].set_aim(get_aim)
         course_content[descriptor_code].set_full_name(get_full_name)
            
     return course_content
@@ -246,6 +266,6 @@ if __name__ == "__main__":
     #print(PR5006_HV4701_BIT())
     course_content = PR5006_HV4701_BIT()
     for key in course_content:
-          print(key,":",course_content[key].full_name)   
+          print(key,":",course_content[key].aim,"\n","     content:",course_content[key].content)   
             
            
