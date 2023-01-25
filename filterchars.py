@@ -28,10 +28,43 @@ def get_txt_between(raw:str, re1:re , re2:re ):
          for index in range(1,len(whole_list)):
                 with_All += whole_list[index]
          the_text = (re.split(re2,with_All))[0]
-         return the_text  
+         return the_text
+       
 def PR5006_HV4701_BIT():
-    #  pdf2txt -n ./PR5006-HV4701_BIT_Programme_descriptors.pdf > HV4701.org.txt
-    pass
+    #  Run with BASH
+    #  pdf2txt -n ./PR5006-HV4701_BIT_Programme_descriptors.pdf | /usr/bin/python3 ./filterchars.py
+    def get_full_name(raw:str):
+        re1 = r"(?i)Title"
+        re2 = r"(?i)Level"
+        result = get_txt_between(raw,re1,re2)
+        return result.strip()
+    
+    course_content = {}  # A dictionary of "Descriptors" by course
+    # Read txt into pages
+    instr = sys.stdin.read()
+    page_list = instr.split('')
+    
+    current_module = ""
+    raw_list = []
+    # start match
+    re_start = r".*Code Title [A-Z]{2}[0-9]{4}"
+    for page in page_list:
+        proposed_raw = (re.sub(r"PR5006 Bachelor of Information Technology  page [0-9][0-9]?[0-9]?","",page.strip())).strip()
+        if proposed_raw != "":
+            start_of_module = re.match(r"^[A-Z]{2}[0-9]{4}",proposed_raw )
+            if start_of_module is not None:
+                current_module = start_of_module.group()
+                course_content[current_module] = Descriptor(current_module,proposed_raw)
+            else:
+                course_content[current_module].raw += page
+    # Process raw
+    for descriptor_code in course_content:
+        #course_content[descriptor_code].set_learning_outcomes(get_learning_outcomes)
+        #course_content[descriptor_code].set_content(get_content)
+        #course_content[descriptor_code].set_aim(get_aim)
+        course_content[descriptor_code].set_full_name(get_full_name)
+           
+    return course_content
 
 def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> dict:
     #Ucol get descriptors
@@ -64,8 +97,6 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
         re1 = r"[A-Z][0-9]{3}"
         re2 = r"(?i)Course Level[:]?"
         result = get_txt_between(raw,re1,re2)
-        # if (result == "") or (result is None):
-        #     result =  get_txt_between(raw,re3,re4)
         return result.strip()
         
     
@@ -207,9 +238,14 @@ if __name__ == "__main__":
 #    course_content = Wintec_BAppliedIT_Vol2()
 #    for key in course_content:
 #        print(key,":",course_content[key].full_name)
- # UCol
-    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+# UCol
+    # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    # for key in course_content:
+    #      print(key,":",course_content[key].full_name)              
+# UandW
+    #print(PR5006_HV4701_BIT())
+    course_content = PR5006_HV4701_BIT()
     for key in course_content:
-         print(key,":",course_content[key].full_name)              
+          print(key,":",course_content[key].full_name)   
             
            
