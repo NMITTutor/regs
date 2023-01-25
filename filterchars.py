@@ -47,28 +47,24 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
         # #scan raw to accumulate content
         # #return content
         
-        # re1 = r"(?i)Content[:]?"
-        # re2 = r"(?i)Teaching Learning Methods[:]?"
-        # return get_txt_between(raw,re1,re2)
-        pass
-    
+        re1 = r"(?i)Content[:]?"
+        re2 = r"(?i)Learning and Teaching[:]?"
+        return get_txt_between(raw,re1,re2)
+        
     def get_aim(raw:str):
-        # re1 = r"(?i)Aim[:]?"
-        # re2 = r"(?i)Learning Outcomes[:]?"
-        # return get_txt_between(raw,re1,re2)
-        pass
-    
+        re1 = r"(?i)Course Aim[:]?"
+        re2 = r"(?i)Learning Outcomes[:]?"
+        return (get_txt_between(raw,re1,re2)).strip()
+        
 
     def get_full_name(raw:str):
-        # re1 = r"(?i)Module Name[:]?"
-        # re2 = r"(?i)Module Code[:]?"
-        # re3 = r"[A-Z]{4}[0-9]{3} [–]?"
-        # re4 = r"(?i)Credit Value[:]?"
-        # result = get_txt_between(raw,re1,re2)
+        re1 = r"[A-Z][0-9]{3}"
+        re2 = r"(?i)Course Level[:]?"
+        result = get_txt_between(raw,re1,re2)
         # if (result == "") or (result is None):
         #     result =  get_txt_between(raw,re3,re4)
-        # return result.strip()
-        pass
+        return result.strip()
+        
     
     course_content = {}  # A dictionary of "Descriptors" by course
     
@@ -211,6 +207,6 @@ if __name__ == "__main__":
  # UCol
     course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
     for key in course_content:
-         print(key,":",course_content[key].learning_outcomes)              
+         print(key,":",course_content[key].full_name)              
             
            
