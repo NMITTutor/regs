@@ -106,12 +106,12 @@ def Wintec_BAppliedIT_Vol2() -> dict :
     def get_full_name(raw:str):
         re1 = r"(?i)Module Name[:]?"
         re2 = r"(?i)Module Code[:]?"
-        re3 = r"[A-Z]{4}[-9]{3} :"
-        re4 = r"(?i)Credit value[:]?"
+        re3 = r"[A-Z]{4}[0-9]{3} [–]?"
+        re4 = r"(?i)Credit Value[:]?"
         result = get_txt_between(raw,re1,re2)
         if (result == "") or (result is None):
             result =  get_txt_between(raw,re3,re4)
-        return result
+        return result.strip()
         
     course_content = {}  # A dictionary of "Descriptors" by course
      
