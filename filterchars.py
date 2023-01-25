@@ -34,6 +34,42 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
     #Ucol get descriptors
     # Run with Bash command:
     # pdf2txt -n ./'UCOL Bachelor of Information and Communications Technology L7 Courses.pdf' | /usr/bin/python3 ./filterchars.py > UCOL.txt
+    
+    def get_learning_outcomes( raw:str) :
+        #scan raw to accumulate learning outcomes 
+        #return LOs
+        re1 = r"(?i)Learning Outcomes[:]?"
+        re2 = r"(?i)Content[:]?"
+        return (get_txt_between(raw,re1,re2)).strip()
+         
+    
+    def get_content( raw:str) :
+        # #scan raw to accumulate content
+        # #return content
+        
+        # re1 = r"(?i)Content[:]?"
+        # re2 = r"(?i)Teaching Learning Methods[:]?"
+        # return get_txt_between(raw,re1,re2)
+        pass
+    
+    def get_aim(raw:str):
+        # re1 = r"(?i)Aim[:]?"
+        # re2 = r"(?i)Learning Outcomes[:]?"
+        # return get_txt_between(raw,re1,re2)
+        pass
+    
+
+    def get_full_name(raw:str):
+        # re1 = r"(?i)Module Name[:]?"
+        # re2 = r"(?i)Module Code[:]?"
+        # re3 = r"[A-Z]{4}[0-9]{3} [–]?"
+        # re4 = r"(?i)Credit Value[:]?"
+        # result = get_txt_between(raw,re1,re2)
+        # if (result == "") or (result is None):
+        #     result =  get_txt_between(raw,re3,re4)
+        # return result.strip()
+        pass
+    
     course_content = {}  # A dictionary of "Descriptors" by course
     
     # Read txt into pages
@@ -62,9 +98,17 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
             else:
                 # append the proposed output to raw
                 course_content[current_module].raw += proposed_output
+    
+    # Process "RAW" data 
+    for descriptor_code in course_content:
+        course_content[descriptor_code].set_learning_outcomes(get_learning_outcomes)
+        course_content[descriptor_code].set_content(get_content)
+        course_content[descriptor_code].set_aim(get_aim)
+        course_content[descriptor_code].set_full_name(get_full_name)
+        
     return course_content
-    #test_filter_pages+["/nCOUNT = "+str(count)]
-    pass
+    
+    
     
 def Unitec_BSC_Prog_Descriptors() -> dict :
     # Unitec get course descriptors
@@ -90,6 +134,7 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         re1 = r"(?i)Learning Outcomes[:]?"
         re2 = r"(?i)Content[:]?"
         return get_txt_between(raw,re1,re2)
+    
     def get_content( raw:str) :
         #scan raw to accumulate content
         #return content
@@ -160,12 +205,12 @@ def Wintec_BAppliedIT_Vol2() -> dict :
 if __name__ == "__main__":
  # test code
  # WinTec
-   course_content = Wintec_BAppliedIT_Vol2()
-   for key in course_content:
-       print(key,":",course_content[key].full_name)
+#    course_content = Wintec_BAppliedIT_Vol2()
+#    for key in course_content:
+#        print(key,":",course_content[key].full_name)
  # UCol
-    # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
-    # for key in course_content:
-    #     print(key,":",course_content[key].raw)                 
+    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    for key in course_content:
+         print(key,":",course_content[key].learning_outcomes)              
             
            
