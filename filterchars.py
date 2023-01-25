@@ -29,7 +29,10 @@ def get_txt_between(raw:str, re1:re , re2:re ):
                 with_All += whole_list[index]
          the_text = (re.split(re2,with_All))[0]
          return the_text  
-     
+def PR5006_HV4701_BIT():
+    #  pdf2txt -n ./PR5006-HV4701_BIT_Programme_descriptors.pdf > HV4701.org.txt
+    pass
+
 def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> dict:
     #Ucol get descriptors
     # Run with Bash command:
