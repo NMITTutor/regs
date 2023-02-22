@@ -28,7 +28,7 @@ class Descriptor(object):
      def set_pre_requisites(self,fn):
          self.prequistes = fn(self.raw)
      def set_co_requisites(self,fn):
-         self.co_prequistes = fn(self.raw)
+         self.co_requisites = fn(self.raw)
         
 def get_txt_between(raw:str, re1:re , re2:re ):
          whole_list = re.split(re1,raw)
@@ -235,10 +235,17 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         return get_txt_between(raw,re1,re2)
     
     def get_co_requisites(raw:str):
-        re1 = r"(?i)Co-Requisites[:]?"
+        result = ""
+        re1 = r"(?i)Co-requisites[:]?"
+        
         re2 = r"(?i)Aim[:]?"
-        return get_txt_between(raw,re1,re2)
-    
+        mode =  get_txt_between(raw,re1,re2)
+        if mode == None : 
+            re2 = r"(?i)Mode of Delivery[:]?"
+            result = get_txt_between(raw,re1,re2)
+        else:
+            result =  mode
+        return result
         
     course_content = {}  # A dictionary of "Descriptors" by course
      
@@ -291,7 +298,8 @@ if __name__ == "__main__":
  # WinTec
    course_content = Wintec_BAppliedIT_Vol2()
    for key in course_content:
-       print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
+       if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
+            print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
 
 # UCol
     # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
