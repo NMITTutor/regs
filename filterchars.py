@@ -13,6 +13,10 @@ class Descriptor(object):
         
         self.full_name = None
         
+        self.prequistes = None
+        
+        self.co_requisites = None
+        
      def set_learning_outcomes(self,fn):
         self.learning_outcomes = fn(self.raw)
      def set_content(self,fn):
@@ -20,7 +24,11 @@ class Descriptor(object):
      def set_aim(self,fn):
         self.aim = fn(self.raw)
      def set_full_name(self,fn):
-        self.full_name = fn(self.raw)
+        self.full_name = fn(self.raw)        
+     def set_pre_requisites(self,fn):
+         self.prequistes = fn(self.raw)
+     def set_co_requisites(self,fn):
+         self.co_prequistes = fn(self.raw)
         
 def get_txt_between(raw:str, re1:re , re2:re ):
          whole_list = re.split(re1,raw)
@@ -58,6 +66,18 @@ def PR5006_HV4701_BIT():
         re2 = r"(?i)Level"
         result = get_txt_between(raw,re1,re2)
         return result.strip()
+
+    def get_pre_requisites(raw:str):
+        re1 = r"(?i)Pre-requisites"
+        re2 = r"(?i)Learning Hours"
+        result = get_txt_between(raw,re1,re2)
+        return result.strip()
+    
+    """ No Co_requisites - beware the following
+        def get_co_requisites(raw:str):
+            Pass 
+            return ""
+            """
     
     course_content = {}  # A dictionary of "Descriptors" by course
     # Read txt into pages
@@ -83,6 +103,7 @@ def PR5006_HV4701_BIT():
         course_content[descriptor_code].set_content(get_content)
         course_content[descriptor_code].set_aim(get_aim)
         course_content[descriptor_code].set_full_name(get_full_name)
+        course_content[descriptor_code].set_pre_requisites(get_pre_requisites)
            
     return course_content
 
@@ -207,6 +228,17 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         if (result == "") or (result is None):
             result =  get_txt_between(raw,re3,re4)
         return result.strip()
+    
+    def get_pre_requisites(raw:str):
+        re1 = r"(?i)Pre-Requisites[:]?"
+        re2 = r"(?i)Co-Requisites[:]?"
+        return get_txt_between(raw,re1,re2)
+    
+    def get_co_requisites(raw:str):
+        re1 = r"(?i)Co-Requisites[:]?"
+        re2 = r"(?i)Aim[:]?"
+        return get_txt_between(raw,re1,re2)
+    
         
     course_content = {}  # A dictionary of "Descriptors" by course
      
@@ -249,23 +281,26 @@ def Wintec_BAppliedIT_Vol2() -> dict :
         course_content[descriptor_code].set_content(get_content)
         course_content[descriptor_code].set_aim(get_aim)
         course_content[descriptor_code].set_full_name(get_full_name)
+        course_content[descriptor_code].set_pre_requisites(get_pre_requisites)
+        course_content[descriptor_code].set_co_requisites(get_co_requisites)
         
     return course_content
 
 if __name__ == "__main__":
  # test code
  # WinTec
-#    course_content = Wintec_BAppliedIT_Vol2()
-#    for key in course_content:
-#        print(key,":",course_content[key].full_name)
+   course_content = Wintec_BAppliedIT_Vol2()
+   for key in course_content:
+       print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
+
 # UCol
     # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
     # for key in course_content:
     #      print(key,":",course_content[key].full_name)              
-# UandW
+# WandW
     #print(PR5006_HV4701_BIT())
-    course_content = PR5006_HV4701_BIT()
-    for key in course_content:
-          print(key,":",course_content[key].aim,"\n","     content:",course_content[key].content)   
+    # course_content = PR5006_HV4701_BIT()
+    # for key in course_content:
+    #       print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes)   
             
            
