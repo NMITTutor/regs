@@ -140,6 +140,22 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
         result = get_txt_between(raw,re1,re2)
         return result.strip()
         
+    def get_pre_requisites(raw:str):
+        result = ""
+        re1 = r"(?i)Pre-requisite or Co-requisite"
+        re2 = r"(?i)Course Aim"
+        result = get_txt_between(raw,re1,re2)
+        if result == "":
+            re1 = r"(?i)Pre-requisite"
+            re2 = r"(?i)Co-requisite"
+            result = get_txt_between(raw,re1,re2)
+        return result.strip()
+    
+    def get_co_requisites(raw:str):
+        re1 = r"(?i)Co-requisite"
+        re2 = r"(?i)Course Aim"
+        result = get_txt_between(raw,re1,re2)
+        return result.strip()
     
     course_content = {}  # A dictionary of "Descriptors" by course
     
@@ -176,6 +192,8 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
         course_content[descriptor_code].set_content(get_content)
         course_content[descriptor_code].set_aim(get_aim)
         course_content[descriptor_code].set_full_name(get_full_name)
+        course_content[descriptor_code].set_pre_requisites(get_pre_requisites)
+        course_content[descriptor_code].set_co_requisites(get_co_requisites)
         
     return course_content
     
@@ -296,15 +314,17 @@ def Wintec_BAppliedIT_Vol2() -> dict :
 if __name__ == "__main__":
  # test code
  # WinTec
-   course_content = Wintec_BAppliedIT_Vol2()
-   for key in course_content:
-       if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
-            print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
+#    course_content = Wintec_BAppliedIT_Vol2()
+#    for key in course_content:
+#        if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
+#             print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
 
 # UCol
-    # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
-    # for key in course_content:
-    #      print(key,":",course_content[key].full_name)              
+    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    for key in course_content:
+        #if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
+             print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
+              
 # WandW
     #print(PR5006_HV4701_BIT())
     # course_content = PR5006_HV4701_BIT()
