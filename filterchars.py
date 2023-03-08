@@ -199,7 +199,7 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
     
     
     
-def Unitec_BSC_Prog_Descriptors() -> dict :
+def Unitec_BSC_Prog_Descriptors() # -> dict :
     # Unitec get course descriptors
     # Unitec process
     # Based on https://www.digitalocean.com/community/tutorials/how-to-perform-server-side-ocr-on-pdfs-and-images
@@ -209,6 +209,17 @@ def Unitec_BSC_Prog_Descriptors() -> dict :
     # Then Run with Bash command
     # pdf2txt ./unitec_output/joined.pdf 
     # Still have a mess with OCR'd text moving on to UCOL for now
+    # 9/March/20223 With a new source
+    # Run with Bash command
+    #   pdf2txt -n ./'UNITEC Course Descriptor Sem2-2022 .pdf' | /usr/bin/python3 ./filterchars.py
+    course_content = {}  # A dictionary of "Descriptors" by course
+     
+    # Read txt into pages
+    instr = sys.stdin.read()
+    page_list = instr.split('')
+    
+    # page list test
+    return page_list
     pass 
     
 def Wintec_BAppliedIT_Vol2() -> dict : 
@@ -312,23 +323,27 @@ def Wintec_BAppliedIT_Vol2() -> dict :
     return course_content
 
 if __name__ == "__main__":
- # test code
- # WinTec
+# test code
+# UniTec
+# Testing for pages
+    pages = Unitec_BSC_Prog_Descriptors()
+    for apage in pages:
+        print(apage)
+# WinTec
 #    course_content = Wintec_BAppliedIT_Vol2()
 #    for key in course_content:
 #        if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
 #             print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
 
 # UCol
-    course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
-    for key in course_content:
-        #if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
-             print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
+    # course_content = Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()
+    # for key in course_content:
+    #     #if not ("none" in course_content[key].co_requisites.lower() or "nil" in course_content[key].co_requisites.lower()) :
+    #          print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes,"\n","     co_requisite:",course_content[key].co_requisites)   
               
 # WandW
     #print(PR5006_HV4701_BIT())
     # course_content = PR5006_HV4701_BIT()
     # for key in course_content:
     #       print(key,":",course_content[key].aim,"\n","     pre_requisite:",course_content[key].prequistes)   
-            
-           
+    
