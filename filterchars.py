@@ -199,7 +199,7 @@ def Ucol_Bachelor_of_Information_and_Communications_Technology_L7_Courses()-> di
     
     
     
-def Unitec_BSC_Prog_Descriptors() # -> dict :
+def Unitec_BSC_Prog_Descriptors(): # -> dict :
     # Unitec get course descriptors
     # Unitec process
     # Based on https://www.digitalocean.com/community/tutorials/how-to-perform-server-side-ocr-on-pdfs-and-images
