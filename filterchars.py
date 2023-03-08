@@ -219,7 +219,48 @@ def Unitec_BSC_Prog_Descriptors() # -> dict :
     page_list = instr.split('')
     
     # page list test
-    return page_list
+    # return page_list
+    
+    current_module = ""
+    
+    # Get descriptors - filter out page and start of Unitec modules, process for each descriptor 
+    restart = r"[A-Z]{4}[0-9]{3}:.*:"
+        
+    for page in page_list:   
+        # Unitec no page header/footer info after filter? 
+        #repagestr = r"[0-9][0-9] \| Page © Copyright 2015, Waikato Institute of Technology"
+        the_module_match = re.match(restart,page)
+        if the_module_match is not None:
+            current_module = the_module_match.group()
+            
+            # Create a descriptor with this proposed_output as "raw"
+            descriptor = Descriptor(current_module,page)
+            course_content[current_module] = descriptor
+        else:
+            # append the proposed output to raw
+            course_content[current_module].raw += page
+
+            # proposed_output = re.sub( r"^1\s*","",(
+            #                         re.sub(
+            #                             restart,"", page #(
+            #                                 #re.sub(repagestr,"",page)
+            #                                 # )
+            #                             )
+            #                     ).strip()
+            #                 )
+                    
+            # if proposed_output != "":
+            #     # If a new course code
+            #     the_module_match = re.match(r"[A-Z]{4}[0-9]{3}",proposed_output)
+            #     if the_module_match is not None:
+            #         current_module = the_module_match.group()
+            #         # Create a descriptor with this proposed_output as "raw"
+            #         descriptor = Descriptor(current_module,proposed_output)
+            #         course_content[current_module] = descriptor
+            #     else:
+            #         # append the proposed output to raw
+            #         course_content[current_module].raw += proposed_output
+
     pass 
     
 def Wintec_BAppliedIT_Vol2() -> dict : 
@@ -326,9 +367,14 @@ if __name__ == "__main__":
 # test code
 # UniTec
 # Testing for pages
-    pages = Unitec_BSC_Prog_Descriptors()
-    for apage in pages:
-        print(apage)
+    #pages = Unitec_BSC_Prog_Descriptors()
+    #for apage in pages:
+    #    print(apage)
+# Testing for Courses
+    course_content = Unitec_BSC_Prog_Descriptors()
+    for key in course_content:
+        print(key," raw is ",course_content[key].raw)
+
 # WinTec
 #    course_content = Wintec_BAppliedIT_Vol2()
 #    for key in course_content:
