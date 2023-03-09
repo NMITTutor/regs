@@ -216,29 +216,41 @@ def Unitec_BSC_Prog_Descriptors(): # -> dict :
      
     # Read txt into pages
     instr = sys.stdin.read()
-    page_list = instr.split('')
-    
+    #page_list = instr.split('')
+    # Unitec has in consistent FF page delimiter from the pdf2txt
+    # But it has a unique course start identifier
+    # going straight to descriptors
+    list_name_course = re.split(r"([A-Z]{4}[0-9]{4}):",instr)
+    for  i in range (0 ,len(list_name_course)-1 ):
+        if i % 2 == 0:
+    course_list = { list_name_course[i]:Descriptor(list_name_course[i],list_name_course[i+1])   for i in range(0,len(list_name_course)-1,2)}
     # page list test
-    # return page_list
+    return course_list
+    pass
+    # current_module = ""
     
-    current_module = ""
-    
-    # Get descriptors - filter out page and start of Unitec modules, process for each descriptor 
-    restart = r"[A-Z]{4}[0-9]{3}:.*:"
+    # # Get descriptors into Descriptor instances
+    # # - filter out FF page and start of Unitec modules, 
+    # # - process for each descriptor 
+    # restart = r"^.*[A-Z]{4}[0-9]{4}:"
         
-    for page in page_list:   
-        # Unitec no page header/footer info after filter? 
-        #repagestr = r"[0-9][0-9] \| Page © Copyright 2015, Waikato Institute of Technology"
-        the_module_match = re.match(restart,page)
+    for course in course_list:  
+        raw_course = re.sub(r"","",course).strip() 
+        # Unitec no page header/footer info after pdf2txt filter? 
+        #     for example: repagestr = r"[0-9][0-9] \| Page © Copyright 2015, Waikato Institute of Technology"
+        the_module_match = re.match(restart,raw_course)
+        
         if the_module_match is not None:
-            current_module = the_module_match.group()
+            current_module = (the_module_match.group().strip())[:-1]
+            print("Got match",current_module)
             
-            # Create a descriptor with this proposed_output as "raw"
-            descriptor = Descriptor(current_module,page)
+            # Create a descriptor with this raw_course as "raw"
+            descriptor = Descriptor(current_module,raw_course)
             course_content[current_module] = descriptor
         else:
-            # append the proposed output to raw
-            course_content[current_module].raw += page
+            # append the raw_course to raw
+            if current_module != "":
+                course_content[current_module].raw += raw_course
 
             # proposed_output = re.sub( r"^1\s*","",(
             #                         re.sub(
@@ -260,7 +272,7 @@ def Unitec_BSC_Prog_Descriptors(): # -> dict :
             #     else:
             #         # append the proposed output to raw
             #         course_content[current_module].raw += proposed_output
-
+    return course_content
     pass 
     
 def Wintec_BAppliedIT_Vol2() -> dict : 
@@ -367,13 +379,15 @@ if __name__ == "__main__":
 # test code
 # UniTec
 # Testing for pages
-    #pages = Unitec_BSC_Prog_Descriptors()
-    #for apage in pages:
-    #    print(apage)
+    pages = Unitec_BSC_Prog_Descriptors()
+    count = 0
+    for apage in pages:
+        print("PAGE ",count,apage)
+        count += 1
 # Testing for Courses
-    course_content = Unitec_BSC_Prog_Descriptors()
-    for key in course_content:
-        print(key," raw is ",course_content[key].raw)
+    # course_content = Unitec_BSC_Prog_Descriptors()
+    # for key in course_content:
+    #     print(key)
 
 # WinTec
 #    course_content = Wintec_BAppliedIT_Vol2()
